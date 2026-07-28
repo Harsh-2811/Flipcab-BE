@@ -81,21 +81,20 @@ class FAQListView(generics.ListAPIView):
 def download_brochure(request):
     import os
 
-    from django.conf import settings
     from django.http import FileResponse, Http404
 
-    file_path = os.path.join(
-        settings.BASE_DIR,
-        "company",
-        "brochures",
-        "Flipcab_company_profile_Modified.pdf",
-    )
-    if os.path.exists(file_path):
-        response = FileResponse(
-            open(file_path, "rb"),
-            content_type="application/pdf",
-            as_attachment=True,
-            filename="Flipcab_company_profile_Modified.pdf",
-        )
-        return response
-    raise Http404("Brochure not found")
+    from company.models import Company
+
+    company = Company.objects.first()
+    if company and company.brochure:
+        try:
+            response = FileResponse(
+                company.brochure.open("rb"),
+                content_type="application/pdf",
+                as_attachment=True,
+                filename=os.path.basename(company.brochure.name),
+            )
+            return response
+        except FileNotFoundError:
+            raise Http404("Brochure file not found on disk")
+    raise Http404("No brochure configured in admin")

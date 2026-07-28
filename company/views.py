@@ -76,3 +76,26 @@ class B2BInquiryCreateView(generics.CreateAPIView):
 class FAQListView(generics.ListAPIView):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer
+
+
+def download_brochure(request):
+    import os
+
+    from django.conf import settings
+    from django.http import FileResponse, Http404
+
+    file_path = os.path.join(
+        settings.BASE_DIR,
+        "company",
+        "brochures",
+        "Flipcab_company_profile_Modified.pdf",
+    )
+    if os.path.exists(file_path):
+        response = FileResponse(
+            open(file_path, "rb"),
+            content_type="application/pdf",
+            as_attachment=True,
+            filename="Flipcab_company_profile_Modified.pdf",
+        )
+        return response
+    raise Http404("Brochure not found")

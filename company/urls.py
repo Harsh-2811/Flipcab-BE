@@ -11,6 +11,7 @@ from company.views import (
     PillarListView,
     QualityTestListView,
     TestimonialListView,
+    download_brochure,
 )
 
 urlpatterns = [
@@ -31,5 +32,8 @@ urlpatterns = [
         "testimonials/", TestimonialListView.as_view()
     ),  # GET  /api/company/testimonials/
     path("inquiry/", B2BInquiryCreateView.as_view()),  # POST /api/company/inquiry/
+    path(
+        "download-brochure/", download_brochure
+    ),  # GET /api/company/download-brochure/
     path("faqs/", FAQListView.as_view()),  # GET  /api/company/faqs/
 ]
